@@ -100,6 +100,7 @@ def assert_file_header_matches_dataclass(
     dataclass_type: type[DataclassInstance],
     delimiter: str,
     comment_prefix: str,
+    quoting: int,
 ) -> None:
     """
     Check that the specified file has a header and its fields match those of the provided dataclass.
@@ -107,11 +108,11 @@ def assert_file_header_matches_dataclass(
     header: FileHeader | None
     if isinstance(file, Path):
         with file.open("r") as fin:
-            header = get_header(fin, delimiter=delimiter, comment_prefix=comment_prefix)
+            header = get_header(fin, delimiter=delimiter, comment_prefix=comment_prefix, quoting=quoting)
     else:
         pos = file.tell()
         try:
-            header = get_header(file, delimiter=delimiter, comment_prefix=comment_prefix)
+            header = get_header(file, delimiter=delimiter, comment_prefix=comment_prefix, quoting=quoting)
         finally:
             file.seek(pos)
 

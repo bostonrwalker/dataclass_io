@@ -1,3 +1,4 @@
+import csv
 from contextlib import contextmanager
 from csv import DictReader
 from pathlib import Path
@@ -27,6 +28,7 @@ class DataclassReader:
         dataclass_type: type[DataclassInstance],
         delimiter: str = "\t",
         comment_prefix: str = "#",
+        quoting: int = csv.QUOTE_MINIMAL,
         **kwds: Any,
     ) -> None:
         """
@@ -35,6 +37,7 @@ class DataclassReader:
             dataclass_type: Dataclass type.
             delimiter: The input file delimiter.
             comment_prefix: The prefix for any comment/preface rows preceding the header row.
+            quoting: Quoting style (enum value from Python csv package).
             dataclass_type: Dataclass type.
 
         Raises:
@@ -46,17 +49,19 @@ class DataclassReader:
             dataclass_type=dataclass_type,
             delimiter=delimiter,
             comment_prefix=comment_prefix,
+            quoting=quoting,
         )
 
         self._dataclass_type = dataclass_type
         self._fin = fin
         self._header = get_header(
-            reader=self._fin, delimiter=delimiter, comment_prefix=comment_prefix
+            reader=self._fin, delimiter=delimiter, comment_prefix=comment_prefix, quoting=quoting
         )
         self._reader = DictReader(
             f=self._fin,
             fieldnames=fieldnames(dataclass_type),
             delimiter=delimiter,
+            quoting=quoting,
         )
 
     def __iter__(self) -> "DataclassReader":

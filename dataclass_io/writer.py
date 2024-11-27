@@ -1,3 +1,4 @@
+import csv
 from contextlib import contextmanager
 from csv import DictWriter
 from dataclasses import asdict
@@ -126,6 +127,7 @@ class DataclassWriter:
         overwrite: bool = True,
         delimiter: str = "\t",
         comment_prefix: str = "#",
+        quoting: int = csv.QUOTE_MINIMAL,
         **kwds: Any,
     ) -> Iterator["DataclassWriter"]:
         """
@@ -146,6 +148,7 @@ class DataclassWriter:
             comment_prefix: The prefix for any comment/preface rows preceding the header row.
                 (This argument is ignored when `mode="write"`. It is used when `mode="append"` to
                 validate that the existing file's header matches the specified dataclass.)
+            quoting: Quoting style (enum value from Python csv package).
             **kwds: Additional keyword arguments to be passed to the `DataclassWriter` constructor.
 
         Yields:
@@ -178,6 +181,7 @@ class DataclassWriter:
                 dataclass_type=dataclass_type,
                 delimiter=delimiter,
                 comment_prefix=comment_prefix,
+                quoting=quoting,
             )
 
         fout = filepath.open(write_mode.abbreviation)
